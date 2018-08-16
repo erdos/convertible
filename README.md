@@ -1,7 +1,10 @@
 # convertible
 
-Converting between java types in Clojure can get messy. This library helps you
-define simple conversion steps and automatically convert between types.
+Converting between Java types in Clojure can get messy. This library helps you
+define simple conversion steps and generate automatic type converter functions.
+
+For example defining a conversion from type `A` to `B` and then from type `B` to `C` automatically
+gives you `=>B` and `=>C` functions. The `=>C` function accepts both `A` and `B` types!
 
 ## Usage
 
