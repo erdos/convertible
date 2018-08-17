@@ -3,7 +3,8 @@
             Collection  Collections
             List ArrayList LinkedList
             Iterator ListIterator Spliterator
-            Set TreeSet HashSet])
+            Set TreeSet HashSet
+            Map HashMap TreeMap])
   (:require [convertible.def :refer [converters defconv]]))
 
 (defconv Collection List (Collections/unmodifiableList (new ArrayList +input+)))
@@ -19,3 +20,6 @@
 
 (defconv Collection TreeSet (new TreeSet +input+))
 (defconv Collection HashSet (new HashSet +input+))
+
+(defconv Map TreeMap (new TreeMap +input+))
+(defconv Map HashMap (new HashMap +input+))
