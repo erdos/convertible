@@ -1,6 +1,8 @@
 (ns convertible.color
   (:import [java.awt Color])
-  (:require [convertible.core :refer [defconv]]))
+  (:require [convertible.def :refer [defconv]]))
+
+(def alap 1)
 
 (defconv String Color
   (or (Color/getColor +input+)

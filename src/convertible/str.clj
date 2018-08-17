@@ -1,4 +1,4 @@
-(ns convertible.io
+(ns convertible.str
   (:require [convertible.def :refer [defsource deftarget defconv]]))
 
 (defconv CharSequence StringBuffer (StringBuffer. +input+))

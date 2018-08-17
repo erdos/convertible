@@ -1,25 +1,23 @@
 (ns convertible.io
+  (:import [java.io FileDescriptor File FileInputStream])
   (:require [convertible.def :refer [defsource deftarget defconv]]))
 
 (set! *warn-on-reflection* true)
-
-;; TODO: support byte/char array and allow it to convert to a reader/input stream
 
 ;; any input stream to specific implementations
 (deftarget java.io.BufferedInputStream)
 (deftarget java.io.PushbackInputStream)
 
 (deftarget java.io.BufferedReader) ;; from  Reader
-
 (deftarget java.io.InputStreamReader);; from InputStream
 
-;; (macroexpand-1 '(deftarget java.io.InputStreamReader))
+(defconv File           FileInputStream (FileInputStream. +input+))
+(defconv FileDescriptor FileInputStream (FileInputStream. +input+))
 
-(defconv java.io.File   java.io.FileInputStream  (java.io.FileInputStream. +input+))
 (defconv java.io.Reader java.io.LineNumberReader (java.io.LineNumberReader. +input+))
 
 ;; from URI and String
-(deftarget java.io.File)
+(deftarget File)
 
 ;; URL and URI
 
@@ -31,14 +29,17 @@
 
 ;; output
 
-(defconv java.io.File         java.io.FileOutputStream   (java.io.FileOutputStream. +input+))
+(defconv File                 java.io.FileOutputStream   (java.io.FileOutputStream. +input+))
 (defconv java.io.Writer       java.io.BufferedWriter     (java.io.BufferedWriter. +input+))
 (defconv java.io.OutputStream java.io.OutputStreamWriter (java.io.OutputStreamWriter. +input+))
 
+(defconv File           java.io.FileReader (java.io.FileReader. +input+))
+(defconv FileDescriptor java.io.FileReader (java.io.FileReader. +input+))
+(defconv File           java.io.FileWriter (java.io.FileWriter. +input+))
+(defconv FileDescriptor java.io.FileWriter (java.io.FileWriter. +input+))
+
 
 (deftarget java.io.DataOutputStream) ;; from OutputStream
-
-;; pipe io
 
 (defconv java.io.PipedInputStream java.io.PipedOutputStream (java.io.PipedOutputStream. +input+))
 (defconv java.io.PipedOutputStream java.io.PipedInputStream (java.io.PipedInputStream. +input+))

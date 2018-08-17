@@ -1,10 +1,8 @@
 (ns convertible.def)
 
-(def converters {})
+(defonce converters {})
 
-(def all-converters)
-
-(def convertible-core-ns (symbol (.getName *ns*)))
+(def target-ns 'convertible.empty)
 
 (defn- maybe-emit-core-ctor
   "Emits a =>TargetClass function in convertible.core namespace that converts to
@@ -12,19 +10,21 @@
   [target-class]
   (assert (class? target-class))
   (let [sym-short (symbol (str "=>" (.getSimpleName target-class)))
-        sym-long  (symbol "convertible.core" (name sym-short))
+        sym-long  (symbol (name target-ns) (name sym-short))
         class-sym (symbol (.getName target-class))]
-    `(do (when-not (resolve '~sym-long)
-           (intern '~'convertible.core '~sym-short (partial convert-to ~class-sym)))
+    `(do (when-not (contains? (loaded-libs) '~target-ns)
+           (require '~target-ns))
+         (when-not (resolve '~sym-long)
+           (intern '~target-ns '~sym-short (partial convert-to ~class-sym)))
          (when-not (resolve '~sym-short)
-           (refer 'convertible.core :only '[~sym-short])))))
+           (refer '~target-ns :only '[~sym-short])))))
 
 (defmacro defconv [from to body]
-  (let [to-class ^Class (resolve to)
+  (let [to-class   ^Class (resolve to)
+        _          (assert (class? to-class) (str "Could not resolve target class " to))
         from-class ^Class (resolve from)
-        target-fn-sym (symbol "convertible.core" (str "=>" (.getSimpleName to-class)))]
-    (assert (class? to-class) (str "Could not resolve target class " to))
-    (assert (class? from-class) (str "Could not resolve source class " from))
+        _          (assert (class? from-class) (str "Could not resolve source class " from))
+        target-fn-sym (symbol (name target-ns) (str "=>" (.getSimpleName to-class)))]
     (assert (not (contains? (set (ancestors from-class)) to-class))
             (format "Target class %s is an ancestor of source class %s, no conversion is needed!"
                     to-class from-class))
@@ -47,7 +47,6 @@
         to    (keys (converters from))
         :when (not= start to)]
     [from to]))
-
 
 ;; TODO: if
 (defn paths [start end]
@@ -118,3 +117,5 @@
               (list 'convertible.def/defconv param-sym cls
                     (list 'new cls (with-meta '+input+ {:tag param-sym}))))
             [nil])))
+
+:ok

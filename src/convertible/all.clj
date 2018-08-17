@@ -1,22 +1,19 @@
 (ns convertible.all
   "Import this ns to access all converter functionality"
-  (:require [convertible.def]
-            [convertible [core str io color date]]))
-
-;; TODO: import everything here!
+  (:require [convertible.def :refer [converters get-converter-fn]]
+            ;; import everything here:
+            [convertible color date io str coll core]))
 
 (defn draw-conversion-table! []
-  (let [sources (sort-by str (keys convertible.def/converters))
-        targets (sort-by str (set (mapcat keys (vals convertible.def/converters))))]
-    (doseq [[idx target] (map-indexed vector targets)]
-      (dotimes [_ idx] (print "|" \tab))
-      (println (.getSimpleName target)))
-    (println)
-    (doseq [source sources]
-      (doseq [target targets]
+  (let [cs      @#'converters
+        sources (sort-by str (keys cs))
+        targets (sort-by str (set (mapcat keys (vals cs))))]
+    (doseq [[idx source] (map-indexed vector sources)]
+      (dotimes [_ idx] (print "|"))
+      (println (.getSimpleName source)))
+    ; (println)
+    (doseq [target targets]
+      (doseq [source sources]
         (print
-         (if (convertible.def/get-converter-fn source target) "X" "-")
-         \tab))
-      (println source))))
-
-;; (draw-conversion-table!)
+         (if (get-converter-fn source target) "#" ".")))
+      (println \space target))))
