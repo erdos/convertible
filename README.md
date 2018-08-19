@@ -72,14 +72,15 @@ try to find an other conversion path.
 The above codes successfully generated the `(=>URI)`, `(=>URL)`, `(=>File)`, `(=>Time)` methods.
 You need to import them from the location of the conversion to call them.
 
-The automatically generated converter functions are called `(=>XXX)` where `XXX` is the name of the
+The automatically generated converter functions are named `(=>XXX)` where `XXX` is the name of the
 target class.
 
 #### No `toString` conversions please
 
 You should not define converters that convert to `String` types. This is because
-many different types can be constructed from strings and it would enable
-irrational and unexpected type conversions.
+many different types can be constructed directly from strings and automatically
+composing them with string conversions would enable irrational and unexpected
+type conversions.
 
 ## Ideas
 
