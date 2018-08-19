@@ -82,6 +82,20 @@ many different types can be constructed directly from strings and automatically
 composing them with string conversions would enable irrational and unexpected
 type conversions.
 
+#### Use with Prismatic Schema library
+
+Use the `convertible.coercer/matcher` function with `schema.coerce/coercer`
+to automatically coerce to a given schema.
+
+For example lets say we want to coerce to `CommentRequest` schema:
+
+``` clojure
+(def parse-comment-request
+  (coerce/coercer CommentRequest convertible.coercer/matcher))
+```
+
+Calling `parse-comment-request` will do the coercion or throw a `RuntimeException`.
+
 ## Ideas
 
 These are not implemented (yet).
