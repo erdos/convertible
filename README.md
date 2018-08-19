@@ -46,6 +46,18 @@ You need to import them from the location of the conversion to call them.
 The automatically generated converter functions are called `(=>XXX)` where `XXX` is the name of the
 target class.
 
+## Ideas
+
+These are not implemented (yet).
+
+- Higher performance with advanced macros when type is known: If the form at the
+argument of a converter function is type annotated then this this information is
+used to find a faster way to convert types.
+- Draw a nice Graphviz graph of the possible conversions.
+- Support for most io and date related classes.
+- Much more different date-time format strings should be supported.
+- Write a better explanation :D
+
 ## License
 
 Copyright © 2018 Janos Erdos
