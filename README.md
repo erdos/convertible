@@ -14,6 +14,35 @@ First, import the definitions interface.
 (require '[convertible.def :refer [defconv defsource deftarget]])
 ```
 
+Second, define some type conversion logics. For example, define ways to convert from `String` to `LocalDate` and also from `LocalDate` to `LocalDateTime`.
+
+``` clojure
+(defconv String LocalDate (LocalDate/parse +input+)
+(defconv LocalDate LocalDateTime (.atStartOfDay +input+))
+```
+
+These lines generated two functions: `(=>LocalDate)` and `(=>LocalDateTime)`.
+
+``` clojure
+(=>LocalDate "2018-01-01")
+;; it returns #object[java.time.LocalDate ... "2018-01-01"]
+
+(=>LocalDateTime (=>LocalDate "2018-01-01"))
+;; it returns #object[java.time.LocalDateTime ... "2018-01-01T00:00"]
+```
+
+The fun part is that this library chains conversions automatically.
+
+``` clojure
+(=>LocalDateTime "2018-01-01")
+;; it calls =>LocalDate and then =>LocalDateTime to return #object[java.time.LocalDateTime ... "2018-01-01T00:00"]
+```
+
+The library found the shortest path from `String` through `LocalDate` to `LocalDateTime`.
+Also, the path is memoized so next time type conversion will be faster between these two types.
+
+See namespaces `coll`, `color`, `core`, `io`, `str` namespaces for a list of available type conversions. Import `convertible.all` namespace to access all implemented type conversions.
+
 ### Definitions
 
 You can use three methods to generate converter code.
@@ -27,7 +56,7 @@ because the `File` class has a `toURI()` and a `toURL()` method.
 
 Use `defconv` to define more complex conversion logics. For example, writing the following:
 
-```
+``` clojure
 (defconv String Time
   (try (Time/valueOf +input+)
        (catch IllegalArgumentException _ nil)))
@@ -45,6 +74,12 @@ You need to import them from the location of the conversion to call them.
 
 The automatically generated converter functions are called `(=>XXX)` where `XXX` is the name of the
 target class.
+
+#### No `toString` conversions please
+
+You should not define converters that convert to `String` types. This is because
+many different types can be constructed from strings and it would enable
+irrational and unexpected type conversions.
 
 ## Ideas
 
