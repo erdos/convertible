@@ -6,6 +6,11 @@ define simple conversion steps and generate automatic type converter functions.
 For example defining a conversion from type `A` to `B` and then from type `B` to `C` automatically
 gives you `=>B` and `=>C` functions. The `=>C` function accepts both `A` and `B` types!
 
+## Version
+
+[![Clojars Project](https://img.shields.io/clojars/v/io.github.erdos/convertible.svg)](https://clojars.org/io.github.erdos/convertible)
+
+
 ## Usage
 
 First, import the definitions interface.
