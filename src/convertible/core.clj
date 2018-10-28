@@ -24,6 +24,8 @@
 (defconv Number BigDecimal (bigdec +input+))
 (defconv Number Boolean (not (zero? +input+)))
 
+(defconv Object clojure.lang.IDeref (delay +input+))
+
 (defconv String Boolean
   (case +input+
     ("t" "T" "true" "True" "TRUE" "1") true
